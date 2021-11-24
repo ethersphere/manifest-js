@@ -4,6 +4,8 @@ Manifest-JS provides high-level Swarm manifest functionalities built on top of M
 
 # Usage
 
+> To use this library, you will need to provide a `Bee` instance from the `@ethersphere/bee-js` library.
+
 ## Create an instance of the `ManifestJs` class:
 
 ```js
@@ -29,7 +31,7 @@ const paths = await manifestJs.getHashes(swarmHash)
         'index.html': '24f5a17a06408b66d280a2d7a7df73bae7f8074aadcec9a0313ac4b4203f7ffa',
         'style.css': '8cdd2ea48759480a81dbb3c1219d190dea9d37f533c450cfe4ab69faac4c401c'
     }
-/*
+*/
 ```
 
 ## Get index document from a manifest:
