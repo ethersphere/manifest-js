@@ -7,41 +7,41 @@ const manifestJs = new ManifestJs(bee)
 
 describe('manifest detection', () => {
   it('should return true for website', async () => {
-    const hash = await bee.uploadFilesFromDirectory(process.env.BEE_POSTAGE, 'test/sample-website')
-    expect(await manifestJs.isManifest(hash)).toBe(true)
+    const { reference } = await bee.uploadFilesFromDirectory(process.env.BEE_POSTAGE, 'test/sample-website')
+    expect(await manifestJs.isManifest(reference)).toBe(true)
   })
 
   it('should return true for single file', async () => {
-    const hash = await bee.uploadFile(process.env.BEE_POSTAGE, 'test/sample-website/reset.css')
-    expect(await manifestJs.isManifest(hash)).toBe(true)
+    const { reference } = await bee.uploadFile(process.env.BEE_POSTAGE, 'test/sample-website/reset.css')
+    expect(await manifestJs.isManifest(reference)).toBe(true)
   })
 
   it('should return false for data', async () => {
-    const hash = await bee.uploadData(process.env.BEE_POSTAGE, 'Hello Swarm!')
-    expect(await manifestJs.isManifest(hash)).toBe(false)
+    const { reference } = await bee.uploadData(process.env.BEE_POSTAGE, 'Hello Swarm!')
+    expect(await manifestJs.isManifest(reference)).toBe(false)
   })
 })
 
 describe('index-document retrieval', () => {
   it('should return index.html for website', async () => {
-    const hash = await bee.uploadFilesFromDirectory(process.env.BEE_POSTAGE, 'test/sample-website', {
+    const { reference } = await bee.uploadFilesFromDirectory(process.env.BEE_POSTAGE, 'test/sample-website', {
       indexDocument: 'index.html',
     })
-    expect(await manifestJs.getIndexDocument(hash)).toBe('index.html')
+    expect(await manifestJs.getIndexDocument(reference)).toBe('index.html')
   })
 
   it('should return null when not set', async () => {
-    const hash = await bee.uploadFilesFromDirectory(process.env.BEE_POSTAGE, 'test/sample-website')
-    expect(await manifestJs.getIndexDocument(hash)).toBe(null)
+    const { reference } = await bee.uploadFilesFromDirectory(process.env.BEE_POSTAGE, 'test/sample-website')
+    expect(await manifestJs.getIndexDocument(reference)).toBe(null)
   })
 })
 
 describe('manifest listing', () => {
   it('should list paths with hashes', async () => {
-    const hash = await bee.uploadFilesFromDirectory(process.env.BEE_POSTAGE, 'test/sample-website', {
+    const { reference } = await bee.uploadFilesFromDirectory(process.env.BEE_POSTAGE, 'test/sample-website', {
       indexDocument: 'index.html',
     })
-    expect(await manifestJs.getHashes(hash)).toStrictEqual({
+    expect(await manifestJs.getHashes(reference)).toStrictEqual({
       'assets/photo1.jpg': 'dd30cc1166042f6cf51502a895ec7acce6c0f24e60e395fa1d88bdca4088e11d',
       'assets/photo2.jpg': '1f9e0f141ffa95d3691f44a2839b9466c304608294c1d811f81624845e4a1569',
       'assets/photo3.jpg': 'f4db540a4dfd2510af841cf8a7430be3a4886bbf96c6b5fa1e5b0b7192ea732e',
