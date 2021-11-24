@@ -40,7 +40,7 @@ const indexDocument = await manifestJs.getIndexDocument(swarmHash)
 // 'index.html' (string | null)
 ```
 
-## Maintainers
+# Maintainers
 
 - [nugaon](https://github.com/nugaon)
 - [Cafe137](https://github.com/Cafe137)
