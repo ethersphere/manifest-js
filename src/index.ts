@@ -1,5 +1,4 @@
-import { Bee } from '@ethersphere/bee-js'
-import { bytesToHex } from '@ethersphere/bee-js/dist/src/utils/hex'
+import { Bee, Utils } from '@ethersphere/bee-js'
 import { loadAllNodes, MantarayNode, Reference } from 'mantaray-js'
 
 interface ValueNode extends MantarayNode {
@@ -88,7 +87,7 @@ export class ManifestJs {
       const childNode = fork.node
 
       if (this.isValueNode(childNode, path)) {
-        result[path] = bytesToHex(childNode.getEntry)
+        result[path] = Utils.bytesToHex(childNode.getEntry)
       }
 
       if (childNode.isEdgeType()) {
@@ -98,7 +97,7 @@ export class ManifestJs {
   }
 
   private async load(reference: Uint8Array) {
-    return this.bee.downloadData(bytesToHex(reference))
+    return this.bee.downloadData(Utils.bytesToHex(reference))
   }
 
   private bytesToUtf8(bytes: Uint8Array): string {
