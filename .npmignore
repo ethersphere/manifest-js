@@ -1,0 +1,9 @@
+test
+.github
+tsconfig*
+jest.config.ts
+webpack.config.ts
+*.tgz
+.babelrc.js
+.eslintrc.js
+.prettierrc.
