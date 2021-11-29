@@ -34,11 +34,11 @@ const paths = await manifestJs.getHashes(swarmHash)
 */
 ```
 
-## Get index document from a manifest:
+## Get index document path from a manifest:
 
 ```js
 const swarmHash = '0d6378cb3ba46363e4369f1a0bd82803e3c17ec037c19f65565346a7e875aa66'
-const indexDocument = await manifestJs.getIndexDocument(swarmHash)
+const indexDocumentPath = await manifestJs.getIndexDocumentPath(swarmHash)
 // 'index.html' (string | null)
 ```
 

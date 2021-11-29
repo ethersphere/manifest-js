@@ -1,5 +1,10 @@
 import { Bee } from '@ethersphere/bee-js'
-import { loadAllNodes, MantarayNode } from 'mantaray-js'
+import { bytesToHex } from '@ethersphere/bee-js/dist/src/utils/hex'
+import { loadAllNodes, MantarayNode, Reference } from 'mantaray-js'
+
+interface ValueNode extends MantarayNode {
+  getEntry: Reference
+}
 
 /**
  * The ASCII code of the character `/`.
@@ -15,6 +20,9 @@ export class ManifestJs {
     this.bee = bee
   }
 
+  /**
+   * Tests whether a given Swarm hash is a valid mantaray manifest
+   */
   public async isManifest(hash: string): Promise<boolean> {
     try {
       const data = await this.bee.downloadData(hash)
@@ -27,7 +35,10 @@ export class ManifestJs {
     }
   }
 
-  public async getIndexDocument(hash: string): Promise<string | null> {
+  /**
+   * Retrieves `website-index-document` from a Swarm hash, or `null` if it is not present
+   */
+  public async getIndexDocumentPath(hash: string): Promise<string | null> {
     const data = await this.bee.downloadData(hash)
     const node = new MantarayNode()
     node.deserialize(data)
@@ -54,6 +65,9 @@ export class ManifestJs {
     return metadata['website-index-document'] || null
   }
 
+  /**
+   * Retrieves all paths with the associated hashes from a Swarm manifest
+   */
   public async getHashes(hash: string): Promise<Record<string, string>> {
     const data = await this.bee.downloadData(hash)
     const node = new MantarayNode()
@@ -73,8 +87,8 @@ export class ManifestJs {
       const path = prefix + this.bytesToUtf8(fork.prefix)
       const childNode = fork.node
 
-      if (childNode.isValueType() && path !== '/' && childNode.getEntry) {
-        result[path] = this.bytesToHex(childNode.getEntry)
+      if (this.isValueNode(childNode, path)) {
+        result[path] = bytesToHex(childNode.getEntry)
       }
 
       if (childNode.isEdgeType()) {
@@ -84,14 +98,18 @@ export class ManifestJs {
   }
 
   private async load(reference: Uint8Array) {
-    return this.bee.downloadData(this.bytesToHex(reference))
-  }
-
-  private bytesToHex(bytes: Uint8Array): string {
-    return Buffer.from(bytes).toString('hex')
+    return this.bee.downloadData(bytesToHex(reference))
   }
 
   private bytesToUtf8(bytes: Uint8Array): string {
     return Buffer.from(bytes).toString('utf-8')
+  }
+
+  private isValueNode(node: MantarayNode, path: string): node is ValueNode {
+    return !this.isRootSlash(node, path) && node.isValueType() && typeof node.getEntry !== 'undefined'
+  }
+
+  private isRootSlash(node: MantarayNode, path: string): boolean {
+    return path === '/' && node.IsWithMetadataType()
   }
 }

@@ -8,8 +8,8 @@ import type { Config } from '@jest/types'
 
 export default async (): Promise<Config.InitialOptions> => {
   if (!process.env.BEE_POSTAGE) {
+    console.log('BEE_POSTAGE env variable is not set, creating postage stamp...')
     try {
-      console.log('Creating postage stamps...')
       const beeDebugUrl = process.env.BEE_DEBUG_API_URL || 'http://localhost:1635'
       const bee = new BeeDebug(beeDebugUrl)
       process.env.BEE_POSTAGE = await bee.createPostageBatch('1', 20)

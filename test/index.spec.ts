@@ -27,12 +27,12 @@ describe('index-document retrieval', () => {
     const { reference } = await bee.uploadFilesFromDirectory(process.env.BEE_POSTAGE, 'test/sample-website', {
       indexDocument: 'index.html',
     })
-    expect(await manifestJs.getIndexDocument(reference)).toBe('index.html')
+    expect(await manifestJs.getIndexDocumentPath(reference)).toBe('index.html')
   })
 
   it('should return null when not set', async () => {
     const { reference } = await bee.uploadFilesFromDirectory(process.env.BEE_POSTAGE, 'test/sample-website')
-    expect(await manifestJs.getIndexDocument(reference)).toBe(null)
+    expect(await manifestJs.getIndexDocumentPath(reference)).toBe(null)
   })
 })
 
