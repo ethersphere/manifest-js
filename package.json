@@ -44,6 +44,7 @@
     "eslint-plugin-jest": "^24.3.6",
     "eslint-plugin-prettier": "^3.4.0",
     "eslint-plugin-unused-imports": "^1.1.2",
+    "ethereumjs-wallet": "^1.0.2",
     "jest": "^27.0.6",
     "rimraf": "^3.0.2",
     "ts-node": "^10.1.0",
