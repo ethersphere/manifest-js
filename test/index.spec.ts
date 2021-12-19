@@ -72,7 +72,7 @@ describe('feed hash conversion', () => {
       topic,
       wallet.getAddressString(),
     )
-    expect(await manifestJs.convertFeedHashToBzzHash(feedManifest)).toBe(reference)
+    expect(await manifestJs.resolveFeedManifest(feedManifest)).toBe(reference)
   })
 
   it('should convert to the most recent index', async () => {
@@ -98,13 +98,13 @@ describe('feed hash conversion', () => {
       topic,
       wallet.getAddressString(),
     )
-    expect(await manifestJs.convertFeedHashToBzzHash(feedManifest)).toBe(mostRecentReference)
+    expect(await manifestJs.resolveFeedManifest(feedManifest)).toBe(mostRecentReference)
   })
 
   it('should return null for bzz manifest hash', async () => {
     const { reference } = await bee.uploadFilesFromDirectory(process.env.BEE_POSTAGE, 'test/sample-website', {
       indexDocument: 'index.html',
     })
-    expect(await manifestJs.convertFeedHashToBzzHash(reference)).toBe(null)
+    expect(await manifestJs.resolveFeedManifest(reference)).toBe(null)
   })
 })

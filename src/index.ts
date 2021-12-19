@@ -62,11 +62,11 @@ export class ManifestJs {
   }
 
   /**
-   * Converts an arbitrary Swarm hash to a `/bzz` manifest hash if it is a feed hash
-   *
-   * Otherwise returns `Promise<null>` and throws if API calls fail
+   * Resolves an arbitrary Swarm feed manifest to its latest update reference.
+   * @returns `/bzz` root manifest hash, or `Promise<null>` if hash is not a feed manifest
+   * @throws in case of network errors or bad input
    */
-  public async convertFeedHashToBzzHash(hash: string): Promise<string | null> {
+  public async resolveFeedManifest(hash: string): Promise<string | null> {
     const metadata = await this.getRootSlashMetadata(hash)
 
     if (!metadata) {
