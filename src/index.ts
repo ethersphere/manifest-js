@@ -1,5 +1,5 @@
 import { Bee, Utils } from '@ethersphere/bee-js'
-import { loadAllNodes, MantarayNode, Reference } from 'mantaray-js'
+import { loadAllNodes, MantarayNode, MetadataMapping, Reference } from 'mantaray-js'
 
 interface ValueNode extends MantarayNode {
   getEntry: Reference
@@ -38,6 +38,55 @@ export class ManifestJs {
    * Retrieves `website-index-document` from a Swarm hash, or `null` if it is not present
    */
   public async getIndexDocumentPath(hash: string): Promise<string | null> {
+    const metadata = await this.getRootSlashMetadata(hash)
+
+    if (!metadata) {
+      return null
+    }
+
+    return metadata['website-index-document'] || null
+  }
+
+  /**
+   * Retrieves all paths with the associated hashes from a Swarm manifest
+   */
+  public async getHashes(hash: string): Promise<Record<string, string>> {
+    const data = await this.bee.downloadData(hash)
+    const node = new MantarayNode()
+    node.deserialize(data)
+    await loadAllNodes(this.load.bind(this), node)
+    const result = {}
+    this.extractHashes(result, node)
+
+    return result
+  }
+
+  /**
+   * Converts an arbitrary Swarm hash to a `/bzz` manifest hash if it is a feed hash
+   *
+   * Otherwise returns `Promise<null>` and throws if API calls fail
+   */
+  public async convertFeedHashToBzzHash(hash: string): Promise<string | null> {
+    const metadata = await this.getRootSlashMetadata(hash)
+
+    if (!metadata) {
+      return null
+    }
+
+    const owner = metadata['swarm-feed-owner']
+    const topic = metadata['swarm-feed-topic']
+
+    if (!owner || !topic) {
+      return null
+    }
+
+    const reader = this.bee.makeFeedReader('sequence', topic, owner)
+    const response = await reader.download()
+
+    return response.reference
+  }
+
+  private async getRootSlashMetadata(hash: string): Promise<MetadataMapping | null> {
     const data = await this.bee.downloadData(hash)
     const node = new MantarayNode()
     node.deserialize(data)
@@ -61,21 +110,7 @@ export class ManifestJs {
       return null
     }
 
-    return metadata['website-index-document'] || null
-  }
-
-  /**
-   * Retrieves all paths with the associated hashes from a Swarm manifest
-   */
-  public async getHashes(hash: string): Promise<Record<string, string>> {
-    const data = await this.bee.downloadData(hash)
-    const node = new MantarayNode()
-    node.deserialize(data)
-    await loadAllNodes(this.load.bind(this), node)
-    const result = {}
-    this.extractHashes(result, node)
-
-    return result
+    return metadata
   }
 
   private extractHashes(result: Record<string, string>, node: MantarayNode, prefix = ''): void {
