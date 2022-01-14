@@ -1,46 +1,48 @@
-import { Bee } from '@ethersphere/bee-js'
 import Wallet from 'ethereumjs-wallet'
 import { ManifestJs } from '../src'
+import { bee } from './utils'
 
 jest.setTimeout(300_000)
 
-const bee = new Bee('http://localhost:1633')
 const manifestJs = new ManifestJs(bee)
+const BEE_POSTAGE = process.env.BEE_POSTAGE
+
+if (!BEE_POSTAGE) throw new Error('No postage stamp')
 
 describe('manifest detection', () => {
   it('should return true for website', async () => {
-    const { reference } = await bee.uploadFilesFromDirectory(process.env.BEE_POSTAGE, 'test/sample-website')
+    const { reference } = await bee.uploadFilesFromDirectory(BEE_POSTAGE, 'test/sample-website')
     expect(await manifestJs.isManifest(reference)).toBe(true)
   })
 
   it('should return true for single file', async () => {
-    const { reference } = await bee.uploadFile(process.env.BEE_POSTAGE, 'test/sample-website/reset.css')
+    const { reference } = await bee.uploadFile(BEE_POSTAGE, 'test/sample-website/reset.css')
     expect(await manifestJs.isManifest(reference)).toBe(true)
   })
 
   it('should return false for data', async () => {
-    const { reference } = await bee.uploadData(process.env.BEE_POSTAGE, 'Hello Swarm!')
+    const { reference } = await bee.uploadData(BEE_POSTAGE, 'Hello Swarm!')
     expect(await manifestJs.isManifest(reference)).toBe(false)
   })
 })
 
 describe('index-document retrieval', () => {
   it('should return index.html for website', async () => {
-    const { reference } = await bee.uploadFilesFromDirectory(process.env.BEE_POSTAGE, 'test/sample-website', {
+    const { reference } = await bee.uploadFilesFromDirectory(BEE_POSTAGE, 'test/sample-website', {
       indexDocument: 'index.html',
     })
     expect(await manifestJs.getIndexDocumentPath(reference)).toBe('index.html')
   })
 
   it('should return null when not set', async () => {
-    const { reference } = await bee.uploadFilesFromDirectory(process.env.BEE_POSTAGE, 'test/sample-website')
+    const { reference } = await bee.uploadFilesFromDirectory(BEE_POSTAGE, 'test/sample-website')
     expect(await manifestJs.getIndexDocumentPath(reference)).toBe(null)
   })
 })
 
 describe('manifest listing', () => {
   it('should list paths with hashes', async () => {
-    const { reference } = await bee.uploadFilesFromDirectory(process.env.BEE_POSTAGE, 'test/sample-website', {
+    const { reference } = await bee.uploadFilesFromDirectory(BEE_POSTAGE, 'test/sample-website', {
       indexDocument: 'index.html',
     })
     expect(await manifestJs.getHashes(reference)).toStrictEqual({
@@ -57,7 +59,7 @@ describe('manifest listing', () => {
 
 describe('feed hash conversion', () => {
   it('should convert feed hash', async () => {
-    const { reference } = await bee.uploadFilesFromDirectory(process.env.BEE_POSTAGE, 'test/sample-website', {
+    const { reference } = await bee.uploadFilesFromDirectory(BEE_POSTAGE, 'test/sample-website', {
       indexDocument: 'index.html',
     })
     const wallet = Wallet.fromPrivateKey(
@@ -65,9 +67,9 @@ describe('feed hash conversion', () => {
     )
     const topic = '00'.repeat(32)
     const writer = bee.makeFeedWriter('sequence', topic, wallet.getPrivateKeyString())
-    await writer.upload(process.env.BEE_POSTAGE, reference)
+    await writer.upload(BEE_POSTAGE, reference)
     const feedManifest = await bee.createFeedManifest(
-      process.env.BEE_POSTAGE,
+      BEE_POSTAGE,
       'sequence',
       topic,
       wallet.getAddressString(),
@@ -76,7 +78,7 @@ describe('feed hash conversion', () => {
   })
 
   it('should convert to the most recent index', async () => {
-    const { reference } = await bee.uploadFilesFromDirectory(process.env.BEE_POSTAGE, 'test/sample-website', {
+    const { reference } = await bee.uploadFilesFromDirectory(BEE_POSTAGE, 'test/sample-website', {
       indexDocument: 'index.html',
     })
     const wallet = Wallet.fromPrivateKey(
@@ -84,16 +86,16 @@ describe('feed hash conversion', () => {
     )
     const topic = '00'.repeat(32)
     const writer = bee.makeFeedWriter('sequence', topic, wallet.getPrivateKeyString())
-    const result = await writer.upload(process.env.BEE_POSTAGE, reference)
+    const result = await writer.upload(BEE_POSTAGE, reference)
     const { reference: mostRecentReference } = await bee.uploadFilesFromDirectory(
-      process.env.BEE_POSTAGE,
+      BEE_POSTAGE,
       'test/sample-website/assets',
     )
-    const mostRecentResult = await writer.upload(process.env.BEE_POSTAGE, mostRecentReference)
+    const mostRecentResult = await writer.upload(BEE_POSTAGE, mostRecentReference)
     expect(reference).not.toBe(mostRecentReference)
     expect(result).not.toBe(mostRecentResult)
     const feedManifest = await bee.createFeedManifest(
-      process.env.BEE_POSTAGE,
+      BEE_POSTAGE,
       'sequence',
       topic,
       wallet.getAddressString(),
@@ -102,7 +104,7 @@ describe('feed hash conversion', () => {
   })
 
   it('should return null for bzz manifest hash', async () => {
-    const { reference } = await bee.uploadFilesFromDirectory(process.env.BEE_POSTAGE, 'test/sample-website', {
+    const { reference } = await bee.uploadFilesFromDirectory(BEE_POSTAGE, 'test/sample-website', {
       indexDocument: 'index.html',
     })
     expect(await manifestJs.resolveFeedManifest(reference)).toBe(null)
