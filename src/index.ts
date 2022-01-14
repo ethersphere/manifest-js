@@ -136,7 +136,7 @@ export class ManifestJs {
   }
 
   private bytesToUtf8(bytes: Uint8Array): string {
-    return new TextDecoder("utf-8").decode(bytes)
+    return new TextDecoder('utf-8').decode(bytes)
   }
 
   private isValueNode(node: MantarayNode, path: string): node is ValueNode {
