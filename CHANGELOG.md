@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.1.1](https://www.github.com/ethersphere/manifest-js/compare/v1.1.0...v1.1.1) (2022-01-14)
+
+
+### Bug Fixes
+
+* remove dependency on Buffer which needs to be polyfilled in browser ([#5](https://www.github.com/ethersphere/manifest-js/issues/5)) ([a9d05ce](https://www.github.com/ethersphere/manifest-js/commit/a9d05ce2b02ff058a969ec40bd2c95bc395286ca))
+
 ## [1.1.0](https://www.github.com/ethersphere/manifest-js/compare/v1.0.0...v1.1.0) (2021-12-19)
 
 
