@@ -1,6 +1,6 @@
 {
   "name": "@ethersphere/manifest-js",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Swarm manifest abstraction library on top of the mantaray data structure",
   "main": "dist/index.min.js",
   "types": "dist/index.d.ts",
@@ -60,7 +60,6 @@
   "peerDependencies": {
     "@ethersphere/bee-js": ">=4.x"
   },
-
   "engines": {
     "node": ">=12.0.0",
     "npm": ">=6.0.0",

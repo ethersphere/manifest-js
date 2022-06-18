@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.2.1](https://www.github.com/ethersphere/manifest-js/compare/v1.2.0...v1.2.1) (2022-06-18)
+
+
+### Bug Fixes
+
+* update bee-js peer dependency ([#13](https://www.github.com/ethersphere/manifest-js/issues/13)) ([6419cb3](https://www.github.com/ethersphere/manifest-js/commit/6419cb306ae364ea804d249253470aa9d5e71911))
+
 ## [1.2.0](https://www.github.com/ethersphere/manifest-js/compare/v1.1.1...v1.2.0) (2022-03-30)
 
 
